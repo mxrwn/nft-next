@@ -1,0 +1,135 @@
+.sidenav
+  width: 300px
+  height: 100%
+  position: fixed
+  background: white
+  display: flex
+  flex-direction: column
+  align-items: center
+  padding: 20px
+  overflow-x: hidden
+  &::before
+    position: absolute
+    top: 0
+    right: -95%
+    content: ''
+    background: rgba(0,0,0,0.1)
+    width: 100%
+    height: 100%
+    filter: blur(100px)
+    z-index: -1
+  .wallet
+    width: 250px
+    background: rgb(0, 255, 149)
+    color: rgb(0, 150, 50)
+    margin-bottom: 10px 
+    text-overflow: ellipsis
+    white-space: nowrap
+    overflow: hidden
+    font-size: 10px
+    padding: 1em
+    border-radius: 10px
+  .balance
+    width: 250px
+    padding: 20px
+    background: white
+    height: 250px
+    box-shadow: 0 0 50px rgba(0,0,0,0.1)
+    border-radius: 20px
+    display: flex
+    flex-direction: column
+    align-items: center
+    &_price
+      display: flex
+      justify-content: center
+      flex-direction: column
+      align-items: center
+    .currency
+      display: flex
+      justify-content: center
+      align-items: center
+      color: white
+      padding: 4px
+      background: rgba(100,100,200,0.5)
+      width: 60px
+      border-radius: 20px
+      h5
+        color: white
+      svg
+        font-size: 12px
+        margin-right: 5px
+    h2
+      font-weight: 400
+  .graph
+    display: flex
+    justify-content: flex-end
+    align-items: flex-end
+    width: 100%
+    height: 100%
+  .nav
+    display: flex
+    flex-direction: column
+    width: 100%
+    margin: 50px 0
+    .link
+      width: 100%
+      padding: 10px 0
+      color: rgba(0,0,0,0.7)
+      a
+        font-weight: 400
+      svg
+        margin-right: 10px
+  .recent_activities
+    width: 100%
+    height: 400px
+    .activity
+      background: white
+      padding: 10px
+      display: flex
+      align-items: center
+      justify-content: space-between
+      border-radius: 20px
+      box-shadow: 0 0 50px rgba(0,0,0,0.1)
+      margin: 15px 0
+      &_nft
+        h3
+          font-size: 12px
+        h5
+          text-align: left
+      &_image
+        min-width: 40px
+        height: 40px
+        border-radius: 50%
+        background: rgb(200,200,200)
+  .accounts
+    position: absolute
+    width: 100%
+    height: 60px
+    background: rgba(0,0,0,0.05)
+    bottom: 0
+    left: 0
+    display: flex
+    padding: 12.5px
+    .account_icon
+      width: 30px
+      height: 30px
+      opacity: 0.5
+      margin-right: 10px
+      background: rgba(0,0,0,0.2)
+      border-radius: 50%
+      &_active
+        width: 30px
+        height: 30px
+        opacity: 1
+        margin-right: 10px
+        background: rgba(0,0,0,0.2)
+        border-radius: 50%
+    .add_account
+      width: 30px
+      height: 30px
+      display: flex
+      justify-content: center
+      align-items: center
+      color: grey
+
+
