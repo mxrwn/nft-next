@@ -1,17 +1,16 @@
 .home
   width: 100%
-  transform: translateX(300px)
-  padding: 20px 20px
   &.active
     
   .featured
     margin: 20px 0
+    color: white
     .nfts
       display: flex
       margin: 10px 0 
       width: 100%
       overflow-y: scroll
-      border-radius: 20px
+      border-radius: 10px
       .nft
         margin-right: 10px
         background: rgba(0,0,0,0.2)
@@ -19,15 +18,22 @@
         min-height: 200px
         width: 200px
         height: 200px
-        border-radius: 20px
+        border-radius: 10px
         img
           object-fit: cover
           width: 100%
           height: 100%
-          border-radius: 20px
+          border-radius: 10px
   .tip
     padding: 20px
     width: 100%
     height: 200px
-    background: #00FF95
-    border-radius: 20px
+    background: linear-gradient(-45deg, #FFC658, #FF58BC)
+    border-radius: 10px
+    position: relative
+    img
+      position: absolute
+      height: 120%
+      transform: translateY(-2%)
+      top: 0
+      right: 0

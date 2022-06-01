@@ -5,15 +5,26 @@ body {
   padding: 0;
   margin: 0;
   font-family: 'Poppins';
-}
-body{
-  width: 70%;
-  min-width: 1200px;
+  background: rgb(20,20,20);
 }
 
 h5{
   color: grey;
   text-align: center;
+}
+
+.container{
+  margin: 20px 150px;
+  height: auto;
+  width: auto;
+  padding: 0 20px;
+  transition: 0.5s;
+}
+
+.container.active{
+  margin-right: 0;
+  margin-left: 300px;
+  transition: 0.5s;
 }
 
 a {

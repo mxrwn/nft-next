@@ -4,10 +4,10 @@ import React from 'react';
 import styles from './../styles/nav.module.sass'
 import Link from 'next/link'
 
-const Nav = () => {
+const Nav = ({toggleActive, activeDashboard}) => {
   return (
     <div className={styles.nav}>
-      <Icon icon={faDashboard} link='/'/>
+      <Icon icon={faDashboard} link='/' onClick={() => toggleActive()} active={activeDashboard}/>
       <Icon icon={faHome} link='/'/>
       <Icon icon={faSearch} link='/search'/>
       <Icon icon={faCompass} link='/explore'/>
@@ -15,10 +15,10 @@ const Nav = () => {
   );
 }
 
-const Icon = ({icon, link}) => {
+const Icon = ({icon, link, active, ...events}) => {
   return (
     <Link href={link}>
-    <div className={styles.icon}>
+    <div className={active ? `${styles.icon} ${styles.active}` : styles.icon }  {...events}>
       <FontAwesomeIcon icon={icon}/>
     </div>
     </Link>
