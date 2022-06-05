@@ -2,7 +2,7 @@ import {useState, useEffect, useRef} from 'react'
 import Button from "../components/button";
 import Nav from "../components/nav";
 import SideNav from "../components/sidenav";
-import styles from './../styles/home.module.sass'
+import styles from './../sass/pages/_home.module.sass'
 import cards from './../assets/cards.png';
 
 import { loadNFTs } from '../API/nfts';
@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <div className={styles.home}>
-      <Tip/>
+      {/* <Tip/> */}
       <FeaturedNFTs nfts={nfts}/>
     </div>
   )
@@ -39,9 +39,6 @@ const Tip = () => {
         <p>The world’s first secure digital marketplace for crypto NFTs.</p>
         <Button>Learn more</Button>
         <Button>Discover</Button>
-      </div>
-      <div className={styles.tip_right}>
-        <img src={cards.src}/>
       </div>
     </div>
   )

@@ -1,0 +1,18 @@
+@import './../base/color-themes'
+
+.content
+  width: 100vw
+  height: 100vh
+  @include themed()
+    background: t('bg')
+.container
+  margin: 0 150px
+  padding-top: 20px
+  height: auto
+  width: auto
+  padding: 0 20px
+  transition: 0.5s
+  &.active
+    margin-right: 0
+    margin-left: 300px
+    transition: 0.5s

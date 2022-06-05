@@ -11,7 +11,6 @@ export class AppController {
   constructor(
     @Inject("NOTIFICATION_SERVICE") private readonly notification: ClientProxy,
     @Inject("VERIFICATION_SERVICE") private readonly verification: ClientProxy,
-    @Inject("USER_SERVICE") private readonly userService: ClientProxy
   ) {}
 
   @Get()

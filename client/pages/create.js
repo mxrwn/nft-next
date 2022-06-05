@@ -9,7 +9,7 @@ import Market from './../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import {
   nftaddress, nftmarketaddress
 } from '../config.js'
-import styles from './../styles/create.module.sass'
+import styles from './../sass/pages/_create.module.sass'
 import Button from '../components/button';
 import { verify } from '../API/verification';
 

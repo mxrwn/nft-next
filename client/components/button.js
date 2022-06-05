@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './../styles/button.module.sass'
+import styles from './../sass/components/_button.module.sass'
 
 const Button = ({children, ...props}) => {
   return (

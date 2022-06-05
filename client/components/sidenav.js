@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './../styles/sidenav.module.sass'
+import styles from './../sass/layout/_sidenav.module.sass'
 import Link from "next/link";
 import { useState, useEffect } from 'react';
 import { Line } from "react-chartjs-2";

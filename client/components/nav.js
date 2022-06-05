@@ -1,7 +1,7 @@
 import { faCompass, faDashboard, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import styles from './../styles/nav.module.sass'
+import styles from './../sass/layout/_nav.module.sass'
 import Link from 'next/link'
 
 const Nav = ({toggleActive, activeDashboard}) => {
