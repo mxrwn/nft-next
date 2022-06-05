@@ -10,7 +10,10 @@ export class AppController {
 
   @MessagePattern('verify')
   async verify(data): Promise<any> {
-    const [nft, nfts] = data;
+    let [nft, nfts] = data;
+    if(!nfts || nfts === null) {
+      nfts = []
+    }
     const promises = await nfts.map(
       async n => {
         const current = loadImage(nft)

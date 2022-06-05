@@ -7,7 +7,9 @@ import Link from 'next/link'
 const Nav = ({toggleActive, activeDashboard}) => {
   return (
     <div className={styles.nav}>
-      <Icon icon={faDashboard} link='/' onClick={() => toggleActive()} active={activeDashboard}/>
+     <div className={activeDashboard ? `${styles.icon} ${styles.active}` : styles.icon } onClick={() => toggleActive()}>
+      <FontAwesomeIcon icon={faDashboard}/>
+    </div>
       <Icon icon={faHome} link='/'/>
       <Icon icon={faSearch} link='/search'/>
       <Icon icon={faCompass} link='/explore'/>

@@ -12,6 +12,7 @@ import {
 import styles from './../sass/pages/_create.module.sass'
 import Button from '../components/button';
 import { verify } from '../API/verification';
+import { createNFT, saveNFT } from '../API/nfts';
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -26,6 +27,7 @@ const Create = () => {
   const [resp, setResp] = useState([])
   const [disabled, setDisabled] = useState(true)
   const [formInput, updateFormInput] = useState({price: '', name: '', description: ''})
+  const [loading, setLoading] = useState(false)
 
   const onChange = async (e) => {
     const file = e.target.files[0]
@@ -37,6 +39,7 @@ const Create = () => {
         }
       )
       const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      console.log(url)
       setFileUrl(url)
     } catch (error) {
       console.log(error)
@@ -44,53 +47,39 @@ const Create = () => {
   }
 
   async function createItem() {
-
+    setLoading(true)
     const { name, description, price} = formInput
     if(!name || !description || !price || !fileUrl) return
     const data = JSON.stringify({
-      name, description, image: fileUrl
+      name, description, image: fileUrl, category: 'art'
     })
     console.log('test')
     try {
       const added = await client.add(data)
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      const metadata = `https://ipfs.infura.io/ipfs/${added.path}`
       
-      createSale(url)
+      const tokenId = await createNFT(metadata)
+      console.log(tokenId)
     } catch (error) {
       console.log(error)
     }
   }
 
-  async function createSale(url) {
-    console.log('test')
-    const web3Modal = new Web3modal()
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-
-    let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
-    let transaction = await contract.createToken(url)
-    let tx = await transaction.wait()
-    let event = tx.events[0]
-    let value = event.args[2]
-    let tokenId = value.toNumber()
-
-    let price = ethers.utils.parseUnits(formInput.price, 'ether')
-    contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-    transaction = await contract.createMarketItem(
-      nftaddress, tokenId, price
-    )
-    await transaction.wait()
-  }
-
   const checkNFTFunction = async () => {
     setCheck(true)
     const res = await verify(fileUrl)
-    const test = res.filter(nft => nft !== null)
-    if(!test[0]){
-      setDisabled(false)
+    if(res[0]) {
+      console.log('cacaacaaa')
+      const test = res.filter(nft => nft !== null)
+      if(!test[0]){
+        console.log('tteeeest')
+        setDisabled(false)
+      }
+      setResp(test)
     }
-    setResp(test)
+    setDisabled(false)
+    
+    
     
     setTimeout(() => {
       setCheck(false)

@@ -148,16 +148,11 @@ const Nav = () => {
   return (
     <div className={styles.nav}>
       <h6>LINKS</h6>
-       <Link href='/dashboard'>
-        <div className={styles.link}>
-          <FontAwesomeIcon icon={faHeart}/>
-          <a>Dashboard</a>
-        </div>
-      </Link>
-      <Link href='/portfolio'>
+       
+      <Link href='/create'>
       <div className={styles.link}>
       <FontAwesomeIcon icon={faHeart}/>
-          <a>My Portfolio</a>
+          <a>Create</a>
         </div>
       </Link>
       <Link href='/following'>
