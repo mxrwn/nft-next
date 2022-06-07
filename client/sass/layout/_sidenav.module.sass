@@ -41,7 +41,8 @@
   .balance
     width: 250px
     padding: 20px
-    background: white
+    @include themed()
+      background: t('bg')
     height: 250px
     box-shadow: 0 0 50px rgba(0,0,0,0.1)
     border-radius: 10px
@@ -65,6 +66,8 @@
       h5
         color: white
       svg
+        @include themed()
+          
         font-size: 12px
         margin-right: 5px
     h2

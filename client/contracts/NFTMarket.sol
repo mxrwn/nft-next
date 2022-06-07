@@ -26,7 +26,7 @@ contract NFTMarket is ReentrancyGuard {
     bool sold;
   }
 
-  mapping (uint256 => MarketItem) private idToMarketItem;
+  mapping (uint256 => MarketItem) public idToMarketItem;
 
   event MarketItemCreated(
     uint indexed itemId,
@@ -67,10 +67,17 @@ contract NFTMarket is ReentrancyGuard {
     );
   }
 
+  event RecievedSale(
+    address nftContract,
+    uint256 itemId,
+    uint price
+  );
+
   function createMarketSale(
     address nftContract,
     uint256 itemId
   ) public payable nonReentrant {
+    emit RecievedSale(nftContract, itemId, idToMarketItem[itemId].price);
     uint price = idToMarketItem[itemId].price;
     uint tokenId = idToMarketItem[itemId].tokenId;
 
@@ -98,6 +105,12 @@ contract NFTMarket is ReentrancyGuard {
       }
     }
     return items;
+  }
+
+  function getMarketItem(uint id) public view returns (MarketItem memory) {
+    uint currentId = idToMarketItem[id].itemId;
+    MarketItem storage currentItem = idToMarketItem[currentId];
+    return currentItem;
   }
 
   function fetchMyNFTs() public view returns (MarketItem[] memory) {

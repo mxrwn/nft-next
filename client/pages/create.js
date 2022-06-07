@@ -12,7 +12,7 @@ import {
 import styles from './../sass/pages/_create.module.sass'
 import Button from '../components/button';
 import { verify } from '../API/verification';
-import { createNFT, saveNFT } from '../API/nfts';
+import { createMarketItem, createNFT, saveNFT } from '../API/nfts';
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -59,6 +59,7 @@ const Create = () => {
       const metadata = `https://ipfs.infura.io/ipfs/${added.path}`
       
       const tokenId = await createNFT(metadata)
+      const item = await createMarketItem(tokenId, '32');
       console.log(tokenId)
     } catch (error) {
       console.log(error)
