@@ -12,7 +12,9 @@ import {
 import styles from './../sass/pages/_create.module.sass'
 import Button from '../components/button';
 import { verify } from '../API/verification';
-import { createMarketItem, createNFT, saveNFT } from '../API/nfts';
+import { useRouter } from 'next/router'
+import { createMarketItem, createNFT, getUserAddress, saveNFT } from '../API/nfts';
+import LoadingAnimation from '../components/loading';
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -28,6 +30,7 @@ const Create = () => {
   const [disabled, setDisabled] = useState(true)
   const [formInput, updateFormInput] = useState({price: '', name: '', description: ''})
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const onChange = async (e) => {
     const file = e.target.files[0]
@@ -51,7 +54,7 @@ const Create = () => {
     const { name, description, price} = formInput
     if(!name || !description || !price || !fileUrl) return
     const data = JSON.stringify({
-      name, description, image: fileUrl, category: 'art'
+      name, description, image: fileUrl, category: 'art', creator: await getUserAddress()
     })
     console.log('test')
     try {
@@ -59,8 +62,10 @@ const Create = () => {
       const metadata = `https://ipfs.infura.io/ipfs/${added.path}`
       
       const tokenId = await createNFT(metadata)
-      const item = await createMarketItem(tokenId, '32');
+      const item = await createMarketItem(tokenId, price);
       console.log(tokenId)
+      setTimeout(() => {setLoading(false)}, 4000)
+      router.push(`/nft/${tokenId}`)
     } catch (error) {
       console.log(error)
     }
@@ -89,6 +94,9 @@ const Create = () => {
 
   return (
     <div className={styles.create}>
+      {
+        loading ? <LoadingAnimation/> : ''
+      }
       <div className={styles.form}>
         <div className={styles.form_left} onClick={() => console.log(imageInput.current.click())}>
           <div className={styles.preview_image}>

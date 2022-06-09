@@ -25,3 +25,8 @@ export const update = async (wallet, {data}) => {
 export const archive = async (wallet) => {
 
 }
+
+
+export const activities = async (wallet) => {
+  
+}

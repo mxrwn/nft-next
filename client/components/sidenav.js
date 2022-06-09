@@ -13,7 +13,7 @@ import {
 } from 'chart.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEthereum } from '@fortawesome/free-brands-svg-icons';
-import { faPlus, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faHeart, faHome } from '@fortawesome/free-solid-svg-icons';
 import Web3modal from 'web3modal';
 import { ethers } from 'ethers';
 import * as userService from './../API/users'
@@ -36,6 +36,10 @@ const SideNav = ({active}) => {
   const [accounts, setAccounts, removeAccounts] = useCookies(['users'])
 
   useEffect(() => {
+    if(!accounts.users) {
+      setAccounts('users', [])
+    }
+    console.log(accounts)
     // refreshAccounts()
     // ChangedAccounts()
     
@@ -52,21 +56,31 @@ const SideNav = ({active}) => {
       <TotalBalance balance={15}/>
       <Nav/>
       <RecentActivities/>
-      <Accounts accounts={accounts} setAccounts={setAccounts} setUser={setUser}/>
+      <Accounts accounts={accounts.users} setAccounts={setAccounts} setUser={setUser}/>
     </div>
   );
 }
 
 const UserWallet = ({user}) => (
   <div className={styles.wallet}>
-    <div className={styles.wallet_icon} style={{background: user.image}}>
-    </div>
-    <div className={styles.wallet_info}>
-      <div className={styles.wallet_name}>
-        {user.name}
+    <div className={styles.wallet_right}>
+      <div className={styles.wallet_icon} style={{background: user.image}}>
       </div>
-      <div className={styles.wallet_address}>
-        {user.wallet}
+      <div className={styles.wallet_info}>
+        <div className={styles.wallet_info_name}>
+          {user.name}
+        </div>
+        <div className={styles.wallet_info_address}>
+          {user.wallet}
+        </div>
+      </div>
+    </div>
+    <div className={styles.wallet_left}>
+      <div className={styles.wallet_add}>
+        <Link href='/create'>
+          <FontAwesomeIcon icon={faPlus}/>
+        </Link>
+        
       </div>
     </div>
   </div>
@@ -100,7 +114,7 @@ const Graph = () => {
     labels,
     datasets: [{
       data: [451,1687,342,1048],
-      borderColor: '#FF58BC',
+      borderColor: 'black',
       tension: 0.5
     }
     ]
@@ -147,12 +161,12 @@ const Graph = () => {
 const Nav = () => {
   return (
     <div className={styles.nav}>
-      <h6>LINKS</h6>
+      <h3>LINKS</h3>
        
-      <Link href='/create'>
+      <Link href='/'>
       <div className={styles.link}>
-      <FontAwesomeIcon icon={faHeart}/>
-          <a>Create</a>
+      <FontAwesomeIcon icon={faHome}/>
+          <a>Dashboard</a>
         </div>
       </Link>
       <Link href='/following'>
@@ -228,7 +242,7 @@ const RecentActivities = () => {
 
   return (
     <div className={styles.recent_activities}>
-      <h6>RECENT ACTIVITIES</h6>
+      <h3>RECENT ACTIVITIES</h3>
       {
         activities.map((activity, index) => (
           <>
@@ -259,7 +273,7 @@ const Activity = ({data}) => {
   )
 }
 
-const Accounts = ({accounts, setAccounts}) => {
+const Accounts = ({accounts, setAccounts, setUser}) => {
   const RegisterAccount = async () => {
     const web3Modal = new Web3modal()
     const connection = await web3Modal.connect()
@@ -267,14 +281,10 @@ const Accounts = ({accounts, setAccounts}) => {
     const signer = provider.getSigner()
     // setBalance(parseFloat(ethers.utils.formatEther(await provider.getBalance(await signer.getAddress()))))
     const userCreated = await userService.create(await signer.getAddress())
-    let users = JSON.parse(sessionStorage.getItem('accounts'));
-    if(users === null){
-      users = []
-    }
-    
-    const find = users.find(user => user.wallet === userCreated.wallet);
+  
+    const find = accounts.find(user => user.wallet === userCreated.wallet);
     if(!find){
-      setAccounts([...accounts, userCreated])
+      setAccounts('users', [...accounts, userCreated])
       sessionStorage.setItem('accounts', JSON.stringify([...accounts, userCreated]))
     }
     
@@ -284,8 +294,7 @@ const Accounts = ({accounts, setAccounts}) => {
     const web3Modal = new Web3modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
-    setBalance(parseFloat(ethers.utils.formatEther(await provider.getBalance(acc.wallet))))
-    setWallet(acc.wallet)
+    setUser({...acc, balance: parseFloat(ethers.utils.formatEther(await provider.getBalance(acc.wallet)))})
     let tmp = accounts.map(account => {
       if(account.wallet === acc.wallet){
         account.active = true;
@@ -294,21 +303,23 @@ const Accounts = ({accounts, setAccounts}) => {
       }
       return account
     })
-    setAccounts(tmp)
+    setAccounts('users', tmp)
   }
 
   return (
     <div className={styles.accounts}>
-      {
+      {/* {
+        accounts ?
         accounts[0] && (
           accounts.map((account, index) => (
             <AccountIcon data={account} key={index} onClick={() => activeAccount(account)}/>
           ))
-        )
+        ) : 
+        ''
       }
       <div className={styles.add_account} onClick={() => RegisterAccount()}>
         <FontAwesomeIcon icon={faPlus}/>
-      </div>
+      </div> */}
     </div>
   )
 }
@@ -317,7 +328,6 @@ const AccountIcon = ({data, onClick}) => {
   return (
     <div className={data.active ? styles.account_icon_active : styles.account_icon} style={{background: data.image}}
       onClick={onClick}>
-      <img className={styles.account_icon_image}></img>
     </div>
   )
 }

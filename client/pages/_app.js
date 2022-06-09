@@ -9,7 +9,7 @@ import Head from 'next/head'
 function NFTMarketplace({ Component, pageProps }) {
 
   const [activeDashboard, setactiveDashboard] = useState(true)
-  const [darkmode, setDarkmode] = useState(true)
+  const [darkmode, setDarkmode] = useState(false)
 
   const toggleActive = () => {
     setactiveDashboard(!activeDashboard)
@@ -20,7 +20,6 @@ function NFTMarketplace({ Component, pageProps }) {
   }
 
   return (
-    
     
     <div className={'theme ' + (darkmode ? 'theme--dark' : 'theme--light')}>
       <div className='content'>

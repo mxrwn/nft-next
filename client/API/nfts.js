@@ -22,7 +22,7 @@ export async function getNFT(id) {
     if(owner === await signer.getAddress()){
       owner = 'you'
     }
-    console.log(await signer.getAddress(), owner)
+    console.log(tokenContract, await tokenContract.ownerOf(id))
     return {...meta.data, owner}
   } catch (error) {
     console.log(error)
@@ -35,10 +35,11 @@ export async function isOnMarket(id) {
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
     const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
     const item = await marketContract.getMarketItem(id)
+    console.log(item)
     const tokenUri = await tokenContract.tokenURI(item.tokenId.toNumber())
     const meta = await axios.get(tokenUri)  
     let price = ethers.utils.formatUnits(item.price.toString(), 'ether')
-    console.log(item.tokenId.toNumber(), id)
+  
     if(item.tokenId.toNumber() !== parseInt(id)) return false
     return {
       price,
@@ -100,18 +101,27 @@ export async function createSale(id, price) {
   
 }
 
+export async function getUserAddress() {
+  const web3Modal = new Web3modal()
+  const connection = await web3Modal.connect()
+  const provider = new ethers.providers.Web3Provider(connection)
+  const signer = provider.getSigner()
+  return await signer.getAddress()
+}
+
 export async function createNFT(metadata) {
   const web3Modal = new Web3modal()
   const connection = await web3Modal.connect()
   const provider = new ethers.providers.Web3Provider(connection)
   const signer = provider.getSigner()
-
+  
   let contract = new ethers.Contract(nftaddress, NFT.abi, signer)
   let transaction = await contract.createToken(metadata)
   let tx = await transaction.wait()
   let event = tx.events[0]
   let value = event.args[2]
   let tokenId = value.toNumber()
+  console.log(tokenId)
   return tokenId
 }
 
@@ -122,8 +132,27 @@ export async function createMarketItem(tokenId, inputPrice) {
   const provider = new ethers.providers.Web3Provider(connection)
   const signer = provider.getSigner()
   let contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+  console.log(contract)
   let transaction = await contract.createMarketItem(
     nftaddress, tokenId, price
   )
   await transaction.wait()
+}
+
+async function getViews(id) {
+  try {
+    const response = await fetch(`${uri}/views/${id}`)
+    return response.json()
+  } catch (error) {
+    return false
+  }
+}
+
+async function getLikes(id) {
+  try {
+    const response = await fetch(`${uri}/likes/${id}`)
+    return response.json()
+  } catch (error) {
+    return false
+  }
 }
