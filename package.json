@@ -2,5 +2,8 @@
   "name": "nft-next",
   "version": "1.0.0",
   "main": "src/index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@nestjs/microservices": "^8.4.6"
+  }
 }
