@@ -139,6 +139,22 @@ export async function createMarketItem(tokenId, inputPrice) {
   await transaction.wait()
 }
 
+async function createBaseNFT(nft) {
+  try {
+    let response = await fetch(`${uri}/nft`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(nft)
+    })
+    return response.json()
+  } catch (error) {
+    return {}
+  }
+  
+}
+
 async function getViews(id) {
   try {
     const response = await fetch(`${uri}/views/${id}`)

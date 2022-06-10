@@ -308,7 +308,7 @@ const Accounts = ({accounts, setAccounts, setUser}) => {
 
   return (
     <div className={styles.accounts}>
-      {/* {
+      {
         accounts ?
         accounts[0] && (
           accounts.map((account, index) => (
@@ -319,7 +319,7 @@ const Accounts = ({accounts, setAccounts, setUser}) => {
       }
       <div className={styles.add_account} onClick={() => RegisterAccount()}>
         <FontAwesomeIcon icon={faPlus}/>
-      </div> */}
+      </div>
     </div>
   )
 }

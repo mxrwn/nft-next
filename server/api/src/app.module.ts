@@ -22,6 +22,14 @@ import { UsersModule } from './users/users.module';
           host: '127.0.0.1',
           port: 1300
         }
+      },
+      {
+        name: 'NFT_SERVICE',
+        transport: Transport.TCP,
+        options: {
+          host: '127.0.0.1',
+          port: 1000
+        }
       }
     ]),
     UsersModule
