@@ -4,10 +4,11 @@ import { REPL_MODE_STRICT } from 'repl';
 import { ID } from 'src/dto/ID.dto';
 import { UserDTO } from 'src/dto/users.dto';
 import { User } from 'src/schemas/user.schema';
+import { Activity } from 'src/schemas/activity.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject('USER_MODEL') private UserModel: Model<User>){}
+  constructor(@Inject('USER_MODEL') private UserModel: Model<User>, @Inject('ACTIVITY_MODEL') private ActivityModel: Model<Activity>){}
   async create(user : UserDTO) {
     const newUser = {
       ...user,
@@ -26,7 +27,7 @@ export class UsersService {
     return this.UserModel.find().exec()
   }
 
-  getUser(wallet: ID) : Promise<User>{
+  getUser(wallet: ID) {
     return this.UserModel.findOne({wallet: wallet}).exec()
   }
 
@@ -37,4 +38,17 @@ export class UsersService {
   async archive(id: ID): Promise<void> {
    
   }
+
+  getActivities(wallet: ID) {
+    return this.ActivityModel.find({wallet: wallet}).exec()
+  }
+  createActivity(data: any) {
+    const newActivity = {
+      ...data,
+      image: '',
+
+    }
+    const createdAcitivity = new this.ActivityModel(newActivity)
+    return createdAcitivity.save()
+  } 
 }

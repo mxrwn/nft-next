@@ -1,19 +1,22 @@
 .nav
-  width: calc(4 * 60px)
+  width: calc(2 * 60px)
   height: 60px
-  background: white
-  position: absolute
+  background: #FF9900
+  position: fixed
   bottom: 0
   left: 50%
   display: flex
   transform: translate(-50%)
+  z-index: 9999
   border-radius: 10px 10px 0 0
+  box-shadow: 0 0 20px #ff99008e
   .icon
     width: 60px
+    px
     height: 60px
     display: flex
     justify-content: center
     align-items: center
     &.active
-      background: linear-gradient(90deg, #FF58BC, #ff58bc59, transparent)
+      background: linear-gradient(90deg, #B900F1, transparent)
       border-radius: 10px 0 0 0

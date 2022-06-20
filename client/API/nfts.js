@@ -22,11 +22,44 @@ export async function getNFT(id) {
     if(owner === await signer.getAddress()){
       owner = 'you'
     }
-    console.log(tokenContract, await tokenContract.ownerOf(id))
     return {...meta.data, owner}
   } catch (error) {
     console.log(error)
   }
+}
+
+export async function fetchCreatedItems(){
+  const provider = new ethers.providers.JsonRpcProvider()
+  const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
+
+  const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
+  const data = await marketContract.fetchItemsCreated()
+  console.log(data)
+  
+  const items = await Promise.all(data.map(async i => {
+    const tokenUri = await tokenContract.tokenURI(i.tokenId)
+    const meta = await axios.get(tokenUri)
+    let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
+    return {
+      price,
+      tokenId: i.tokenId.toNumber(),
+      seller: i.seller,
+      owner: i.owner,
+      image: meta.data.image,
+      name: meta.data.name,
+      description: meta.data.description
+    }
+  }))
+  if(items.length === 0) return
+  return items
+}
+
+export async function getMyNFTs() {
+  const provider = new ethers.providers.JsonRpcProvider()
+    const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
+    const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
+    const items = await marketContract.fetchMyNFTs()
+    console.log(items)
 }
 
 export async function isOnMarket(id) {
@@ -37,6 +70,7 @@ export async function isOnMarket(id) {
     const item = await marketContract.getMarketItem(id)
     console.log(item)
     const tokenUri = await tokenContract.tokenURI(item.tokenId.toNumber())
+    console.log(tokenUri)
     const meta = await axios.get(tokenUri)  
     let price = ethers.utils.formatUnits(item.price.toString(), 'ether')
   
@@ -56,7 +90,6 @@ export async function isOnMarket(id) {
 }
 
 export async function loadNFTs() {
-  console.log('started')
   const provider = new ethers.providers.JsonRpcProvider()
   const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
 
@@ -79,25 +112,18 @@ export async function loadNFTs() {
     }
   }))
   if(items.length === 0) return
-  console.log(items)
-  console.log('ended')
   return items
 }
 
 export async function createSale(id, price) {
-  console.log(price)
   price = ethers.utils.parseUnits(price.toString(), 'ether')
   const web3Modal = new Web3modal()
   const connection = await web3Modal.connect()
   const provider = new ethers.providers.Web3Provider(connection)
   const signer = provider.getSigner()
   let contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-  console.log(nftaddress, id, price)
   let transaction = await contract.createMarketSale(nftaddress, id, {value: price})
   let tx = await transaction.wait()
-  console.log(tx)
-  
-
   
 }
 
@@ -109,7 +135,19 @@ export async function getUserAddress() {
   return await signer.getAddress()
 }
 
+export async function getUserBalance() {
+  const web3Modal = new Web3modal()
+  const connection = await web3Modal.connect()
+  const provider = new ethers.providers.Web3Provider(connection)
+  const signer = provider.getSigner()
+  let balance = await signer.getBalance()
+  balance = ethers.utils.formatEther(balance)
+  console.log(balance)
+  return parseFloat(balance)
+}
+
 export async function createNFT(metadata) {
+  console.log(metadata)
   const web3Modal = new Web3modal()
   const connection = await web3Modal.connect()
   const provider = new ethers.providers.Web3Provider(connection)
@@ -121,12 +159,12 @@ export async function createNFT(metadata) {
   let event = tx.events[0]
   let value = event.args[2]
   let tokenId = value.toNumber()
-  console.log(tokenId)
   return tokenId
 }
 
 export async function createMarketItem(tokenId, inputPrice) {
   let price = ethers.utils.parseUnits(inputPrice, 'ether')
+  console.log(price)
   const web3Modal = new Web3modal()
   const connection = await web3Modal.connect()
   const provider = new ethers.providers.Web3Provider(connection)
@@ -136,39 +174,165 @@ export async function createMarketItem(tokenId, inputPrice) {
   let transaction = await contract.createMarketItem(
     nftaddress, tokenId, price
   )
+  console.log(transaction)
   await transaction.wait()
 }
 
-async function createBaseNFT(nft) {
+export async function createBaseNFT(nft) {
   try {
-    let response = await fetch(`${uri}/nft`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(nft)
+    let response = await fetch(`${uri}/nft/${nft}`, {
+      method: 'POST'
     })
     return response.json()
   } catch (error) {
     return {}
   }
-  
 }
 
-async function getViews(id) {
+export async function getBaseNFT(id) {
   try {
-    const response = await fetch(`${uri}/views/${id}`)
+    const response = await fetch(`${uri}/nft/${id}`)
     return response.json()
   } catch (error) {
     return false
   }
 }
 
-async function getLikes(id) {
+export async function getByCategory(name) {
+  const provider = new ethers.providers.JsonRpcProvider()
+  const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
+  const t = await tokenContract._tokenIds();
   try {
-    const response = await fetch(`${uri}/likes/${id}`)
+    const tokens = Array.apply(null, Array(t.toNumber())).map(function (x, i) { return i + 1; });
+    console.log(tokens)
+      
+    const promiseNFTs = await Promise.all(
+      tokens.map(async token => {
+        console.log(token)
+        const nft = await getNFT(token)
+        const onMarket = await isOnMarket(token)
+        return {...nft, ...onMarket}
+      })
+    )
+    console.log(promiseNFTs)
+    let response = promiseNFTs
+    console.log(response, 'test')
+    let promise = 
+    new Promise(resolve => {
+    const allNfts = [];
+    response.map(async nft => {
+      const tokenUri = await tokenContract.tokenURI(nft.tokenId)
+      const meta = await axios.get(tokenUri)
+      console.log(name)
+      console.log(meta.data.category.toLowerCase() === name.toLowerCase())
+      if(meta.data.category.toLowerCase() === name.toLowerCase()) {
+        allNfts.push(nft)
+      }
+      console.log(allNfts)
+      resolve(allNfts)
+    })
+  })
+   
+    return await promise
+    
+  } catch (error) {
+    return []
+  }
+}
+
+
+
+export async function addView(id) {
+  try {
+    const response = await fetch(`${uri}/nft/${id}/views`, {
+      method: 'POST'
+    })
     return response.json()
   } catch (error) {
     return false
   }
 }
+export async function addLike(id) {
+  try {
+    const response = await fetch(`${uri}/nft/${id}/likes/${await getUserAddress()}`, {
+      method: 'POST',
+    })
+    return response.json()
+  } catch (error) {
+    return false
+  }
+}
+
+export async function removeLike(id) {
+  try {
+    const response = await fetch(`${uri}/nft/${id}/likes/${await getUserAddress()}`, {
+      method: 'DELETE'
+    })
+    return response.json()
+  } catch (error) {
+    return false
+  }
+}
+
+export async function sendToVerification(nft) {
+  try {
+    const response = await fetch(`${uri}/verification`, {
+      method: 'POST',
+      headers: {
+        'content-type' : 'application/json'
+      },
+      body: JSON.stringify(nft)
+    })
+    const data = response.json()
+    console.log(data)
+    return data
+  } catch (error) {
+    return {}
+  }
+}
+
+export const getVerificationRequests = async () => {
+  try {
+    const response = await fetch(`${uri}/verification`)
+    const data = response.json()
+    console.log(data)
+    return data
+  } catch (error) {
+    return []
+  }
+} 
+
+export const getVerificationRequest = async (id) => {
+  try {
+    const response = await fetch(`${uri}/verification/${id}`)
+    return await response.json();
+  } catch (error) {
+    return {}
+  }
+}
+
+export const acceptVerification = async (id) => {
+  try {
+    const response = await fetch(`${uri}/verification/${id}/accept`)
+    return await response.json();
+  } catch (error) {
+    return {}
+  }
+}
+
+export const deleteVerification = async (id) => {
+  try {
+    const response = await fetch(`${uri}/verification/${id}/delete`)
+    return await response.json();
+  } catch (error) {
+    return {}
+  }
+}
+
+export const declineVerification = async (id) => {
+  try {
+    const response = await fetch(`${uri}/verification/${id}/decline`)
+    return await response.json();
+  } catch (error) {
+    return {}
+  }}

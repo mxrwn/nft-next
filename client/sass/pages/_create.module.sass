@@ -2,31 +2,50 @@
   width: 100%
   .form
     display: flex
+    flex-direction: column
     width: 100%
     height: 500px
+    flex-direction: column
+    align-items: center
+
+    h6
+      margin: 20px 0
+    select
+      padding: 1em
+      background: rgba(255, 255, 255, 0.05)
+      color: white
+      width: 100%
+      border: none
+      border-radius: 10px
+      margin-bottom: 10px
+      option
+        height: 20px
+        background: black
+        color: white
     input, textarea
+      color: white
       box-sizing: border-box
       width: 100%
       padding: 1em
       border-radius: 10px
       border: none
-      background: rgba(0, 0, 0, 0.05)
+      background: rgba(255, 255, 255, 0.05)
       font-size: 15px
       font-family: 'Poppins'
       &[type='file']
-        width: 500px
-        height: 500px
+        min-width: 600px
+        min-height: 600px
         position: absolute
-        width: 100%
-        height: 100%
         display: none
         border-radius: 10px
       &[type='text'], &[type='number']
         margin-bottom: 10px
     .form_left
       position: relative
-      min-width: 500px
-      min-height: 500px
+      max-width: 600px
+      max-height: 600px
+      min-width: 600px
+      min-height: 600px
       margin-right: 20px
       background: rgba(0, 0, 0, 0.05)
       border-radius: 10px
@@ -39,30 +58,46 @@
         z-index: 0
         border-radius: 5px
     .form_right
-      width: 100%
+      width: 600px
       height: 100%
       display: flex
       flex-direction: column
       justify-content: space-between
+      div
+        margin-bottom: 200px
 
 .checkNFT
-  position: absolute
+  position: fixed
   top: 0
   left: 0
-  width: 100vw
-  height: 100vh
+  width: 100%
+  height: 100%
   background: rgba(0,0,0,0.5)
+  backdrop-filter: blur(10px)
   .checking
     padding: 1em
     display: flex
-    width: 400px
-    height: 200px
+    width: 1000px
+    height: 400px
     background: white
     position: absolute
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
     border-radius: 10px
+    justify-content: space-between
+    .comparator
+      background: black
+      width: 400px
+      height: 100%
+      border-radius: 10px
+      overflow: hidden
+    .comparing
+      background: rgb(20,20,20)
+      width: 400px
+      height: 100%
+      border-radius: 10px
+      animation: loading 2s infinite
     img
       width: 100%
       height: 100%
@@ -74,12 +109,36 @@
       position: absolute
       top: 50%
       left: 50%
-      transform: translate(-50%, -50%)
-      width: 50px
-      height: 50px
-      border-radius: 50%
-      border: dotted 8px white
-      animation: 2s rotate linear infinite
+      width: 10px
+      height: 10px
+      border-radius: 5px
+      background-color: #B900F1
+      color: #B900F1
+      animation: dotFlashing 1s infinite linear alternate
+      animation-delay: .5s
+      &::before, &::after
+        content: ''
+        display: inline-block
+        position: absolute
+        top: 0
+      &::before
+        left: -15px
+        width: 10px
+        height: 10px
+        border-radius: 5px
+        background-color: #B900F1
+        color: #B900F1
+        animation: dotFlashing 1s infinite alternate
+        animation-delay: 0s
+      &::after
+        left: 15px
+        width: 10px
+        height: 10px
+        border-radius: 5px
+        background-color: #B900F1
+        color: #B900F1
+        animation: dotFlashing 1s infinite alternate
+        animation-delay: 1s
     .approved, .error
       position: absolute
       top: 50%
@@ -95,10 +154,65 @@
       background: green
     .error
       background: red
-    
 
+.close
+  width: 30px
+  height: 30px
+  background: #d33f3f
+  position: absolute
+  top: -15px
+  right: -15px
+  border-radius: 50%
+  display: flex
+  justify-content: center
+  align-items: center
+  transform: rotate(45deg)
+  .icon
+    width: 20px
+    height: 4px
+    background: white
+    border-radius: 10px
+    position: relative
+  &::before
+    position: absolute
+    content: ''
+    border-radius: 10px
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    width: 4px
+    height: 20px
+    background: white
+    
+.human
+  position: absolute
+  top: 70%
+  left: 50%
+  transform: translateX(-50%)
+
+.buttons
+  display: flex
+  justify-content: space-between
+  gap: 10px
+  button
+    width: 50%
 @keyframes rotate
   0%
     transform: translate(-50%, -50%) rotate(0deg)
   100%
     transform: translate(-50%, -50%) rotate(360deg)
+
+@keyframes dotFlashing
+  0%
+    background-color: #B900F1
+  50%,
+  100%
+    background-color: #b900f17c
+
+@keyframes loading
+  0%
+    opacity: 1
+  50%
+    opacity: .5
+  100%
+    opacity: 1

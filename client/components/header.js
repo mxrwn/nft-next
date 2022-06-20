@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import styles from './../sass/layout/_header.module.sass'
 
 // LOGO
-import light_logo from './../assets/logo/rnft-light.svg'
-import dark_logo from './../assets/logo/rnft-dark.svg'
+import dark_logo from './../assets/logo/rnft_1.svg'
 
 
 //BULB
@@ -18,8 +17,8 @@ const Header = ({darkmode, toggleTheme}) => {
       <div className={styles.logo}>
         <Image src={darkmode ? light_logo : dark_logo} height='44px' width='44px'/>
       </div>
-      <Search/>
-      <Switch dark={darkmode} onClick={() => toggleTheme()}/>
+      {/* <Search/> */}
+      {/* <Switch dark={darkmode} onClick={() => toggleTheme()}/> */}
     </div>
   );
 }

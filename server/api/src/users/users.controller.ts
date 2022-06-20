@@ -25,6 +25,18 @@ export class UsersController {
     return this.userService.send('get_user', wallet)
   }
 
+  @Get('/:wallet/activities')
+  getActivities(@Param('wallet') wallet): Observable<any> {
+    logger.log('NEW CALL')
+    return this.userService.send('get_activities', wallet)
+  }
+
+  @Post('/:wallet/activities')
+  createActivity(@Param('wallet') wallet, @Body() activity: any): Observable<any> {
+    logger.log('NEW CALL')
+    return this.userService.send('create_activity', {wallet, ...activity})
+  }
+
   @Post()
   createUser(@Body() user: User): Observable<any> {
     logger.log('NEW CALL')

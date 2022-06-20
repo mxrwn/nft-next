@@ -103,11 +103,8 @@ contract NFTMarket is ReentrancyGuard {
     address nftContract,
     uint256 itemId
   ) public payable nonReentrant {
-    emit RecievedSale(nftContract, itemId, idToMarketItem[itemId].price);
     uint price = idToMarketItem[itemId].price;
     uint tokenId = idToMarketItem[itemId].tokenId;
-
-    require(msg.value == price, "Please submit the asking price in order to complete the purchase");
 
     idToMarketItem[itemId].seller.transfer(msg.value);
     IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId);
@@ -152,7 +149,7 @@ contract NFTMarket is ReentrancyGuard {
 
     MarketItem[] memory items = new MarketItem[](itemCount);
     for (uint i = 0; i < totalItemCount; i++) {
-      if(idToMarketItem[i + 1].owner == msg.sender) {
+      if(idToMarketItem[i + 1].seller == msg.sender) {
         uint currentId = idToMarketItem[i + 1].itemId;
         MarketItem storage currentItem = idToMarketItem[currentId];
         items[currentIndex] = currentItem;

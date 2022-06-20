@@ -16,6 +16,7 @@ export class AppController {
     }
     const promises = await nfts.map(
       async n => {
+        console.log(n)
         const current = loadImage(nft)
         const next = loadImage(n.image)
         const {mssim} = await ssim(await current,await next)

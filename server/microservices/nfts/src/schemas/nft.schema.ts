@@ -12,9 +12,7 @@ export class NFT {
   views: number;
 
   @Prop()
-  categories: {
-    ref: "Category"
-  };
+  categories: number;
 
   @Prop()
   likes: string[]

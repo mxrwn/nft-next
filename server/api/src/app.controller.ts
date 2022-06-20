@@ -25,6 +25,7 @@ export class AppController {
 
   @Post('/verify')
   verify(@Body() data) : Observable<any> {
+    logger.log('WPPPPP')
     return this.verification.send('verify', data)
   } 
 }

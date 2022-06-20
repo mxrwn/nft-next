@@ -27,4 +27,4 @@ import { NFTService } from './nft.service';
   providers: [NFTService],
   exports: [ClientsModule]
 })
-export class UsersModule {}
+export class NFTModule {}

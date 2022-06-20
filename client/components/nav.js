@@ -11,8 +11,8 @@ const Nav = ({toggleActive, activeDashboard}) => {
       <FontAwesomeIcon icon={faDashboard}/>
     </div>
       <Icon icon={faHome} link='/'/>
-      <Icon icon={faSearch} link='/search'/>
-      <Icon icon={faCompass} link='/explore'/>
+      {/* <Icon icon={faSearch} link='/search'/>
+      <Icon icon={faCompass} link='/explore'/> */}
     </div>
   );
 }

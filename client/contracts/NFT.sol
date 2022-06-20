@@ -24,6 +24,14 @@ contract NFT is ERC721URIStorage {
     return newItemId;
   }
 
+  function getTokens() public view returns (uint[] memory) {
+    uint[] memory itemIds;
+    for (uint i = 1; i <= _tokenIds.current(); i++) {
+      itemIds[i] = i;
+    }
+    return itemIds;
+  }
+
   function createMultipleToken(uint amount, string[] memory TokenURIs) public returns (uint[] memory) {
     uint[] memory itemIds;
     for (uint i = 0; i < amount; i++) {

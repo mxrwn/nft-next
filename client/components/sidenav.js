@@ -18,7 +18,9 @@ import Web3modal from 'web3modal';
 import { ethers } from 'ethers';
 import * as userService from './../API/users'
 import { useCookies } from 'react-cookie';
-
+import * as activitiesAPI from './../API/activities'
+import { getUserAddress, getUserBalance } from '../API/nfts';
+import { getAddress } from 'ethers/lib/utils';
 
 ChartJS.register(
   CategoryScale,
@@ -33,35 +35,39 @@ ChartJS.register(
 const SideNav = ({active}) => {
 
   const [user, setUser] = useState({});
+  const [balance, setBlanace] = useState(0)
   const [accounts, setAccounts, removeAccounts] = useCookies(['users'])
 
   useEffect(() => {
-    if(!accounts.users) {
-      setAccounts('users', [])
-    }
     console.log(accounts)
     // refreshAccounts()
     // ChangedAccounts()
-    
+    if(accounts.users) {
+      setUser(accounts.users)
+    }
   }, [accounts]);
   return (
     <div className={active ? `${styles.sidenav} ${styles.active}` : styles.sidenav}>
       {
-        user.image ?
-        <UserWallet user={user}/>
+        user ?
+          <UserWallet user={user}/>
         :
         ''
       }
       
-      <TotalBalance balance={15}/>
-      <Nav/>
-      <RecentActivities/>
-      <Accounts accounts={accounts.users} setAccounts={setAccounts} setUser={setUser}/>
+      <TotalBalance balance={balance}/>
+      {/* <Nav/> */}
+      {
+        user && (<RecentActivities user={user}/>)
+      }
+      
+      {/* <Accounts accounts={accounts.users} setAccounts={setAccounts} setUser={setUser}/> */}
     </div>
   );
 }
 
 const UserWallet = ({user}) => (
+  <Link href={`/user/${user.wallet}`}>
   <div className={styles.wallet}>
     <div className={styles.wallet_right}>
       <div className={styles.wallet_icon} style={{background: user.image}}>
@@ -80,15 +86,21 @@ const UserWallet = ({user}) => (
         <Link href='/create'>
           <FontAwesomeIcon icon={faPlus}/>
         </Link>
-        
       </div>
     </div>
   </div>
+  </Link>
 )
 
-const TotalBalance = ({balance}) => {
-
-  // const total_balance = balance.toFixed(2)
+const TotalBalance = () => {
+  const [balance, setBalance] = useState(0);
+  useEffect(() => {
+    async function getBalance(){
+      console.log(await getUserBalance())
+      setBalance(await getUserBalance());
+    }
+    getBalance()
+  }, []);
 
   return (
     <div className={styles.balance}>
@@ -185,69 +197,24 @@ const Nav = () => {
   )
 }
 
-const RecentActivities = () => {
+const RecentActivities = ({user}) => {
 
-  const [activities, setActivities] = useState([{
-    id: 0,
-    type: 'transaction',
-    from: {
-      id: 14,
-      name: 'Jhon Doe',
-    },
-    to: {
-      id: 10,
-      name: 'Maria Sea',
-    },
-    content: {
-      id: 14,
-      name: 'Burger Flipper 5440',
-      image: '',
-      price: 0.14
-    }
-  }, {
-    id: 0,
-    type: 'transaction',
-    from: {
-      id: 14,
-      name: 'Jhon Doe',
-    },
-    to: {
-      id: 10,
-      name: 'Maria Sea',
-    },
-    content: {
-      id: 14,
-      name: 'Burger Flipper 5440',
-      image: '',
-      price: 0.14
-    }
-  },{
-    id: 0,
-    type: 'transaction',
-    from: {
-      id: 14,
-      name: 'Jhon Doe',
-    },
-    to: {
-      id: 10,
-      name: 'Maria Sea',
-    },
-    content: {
-      id: 14,
-      name: 'Burger Flipper 5440',
-      image: '',
-      price: 0.14
-    }
-  }]);
+  const [activities, setActivities] = useState([]);
+
+  useEffect(() => {
+    getActivities();
+  }, [user]);
+
+  async function getActivities () {
+    setActivities(await activitiesAPI.get(user.wallet))
+  }
 
   return (
     <div className={styles.recent_activities}>
       <h3>RECENT ACTIVITIES</h3>
       {
         activities.map((activity, index) => (
-          <>
             <Activity data={activity} key={index}/>
-          </>
         )     
         )
       }
@@ -259,15 +226,12 @@ const RecentActivities = () => {
 const Activity = ({data}) => {
   return (
     <div className={styles.activity}>
-      <div className={styles.activity_image}>
-        <img src={data.content.image}/>
-      </div>
       <div className={styles.activity_nft}>
-        <h3>{data.content.name}</h3>
-        <h5>From {data.from.name}</h5>
+        <h4>{data.title}</h4>
+        <h5>From {data.from}</h5>
       </div>
       <div className={styles.activity_price}>
-        <h5>{data.content.price} ETH</h5>
+        <h5>{data.price} ETH</h5>
       </div>
     </div>
   )
@@ -294,8 +258,9 @@ const Accounts = ({accounts, setAccounts, setUser}) => {
     const web3Modal = new Web3modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
+    
     setUser({...acc, balance: parseFloat(ethers.utils.formatEther(await provider.getBalance(acc.wallet)))})
-    let tmp = accounts.map(account => {
+    let tmp = accounts.map( account => {
       if(account.wallet === acc.wallet){
         account.active = true;
       }else{

@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CategoryModule } from './categories/category.module';
+import { NFTModule } from './nfts/nft.module';
 import { UsersModule } from './users/users.module';
+import { VerificationModule } from './verification/verification.module';
 
 @Module({
   imports: [
@@ -32,7 +35,10 @@ import { UsersModule } from './users/users.module';
         }
       }
     ]),
-    UsersModule
+    UsersModule,
+    NFTModule,
+    CategoryModule,
+    VerificationModule
   ],
   controllers: [AppController],
   providers: [AppService],

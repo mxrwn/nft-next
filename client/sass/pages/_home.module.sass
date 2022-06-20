@@ -1,4 +1,3 @@
-@import './../base/color-themes'
 @import './../utils/variables'
 
 .home
@@ -6,28 +5,70 @@
   .featured
     margin: 20px 0
     color: white
+    overflow: hidden
     .nfts
-      display: flex
-      margin: 10px 0 
+      margin-top: 20px
+      display: grid
+      grid-template-columns: repeat(auto-fill, 200px)
+      grid-template-rows: repeat(2, 200px)
+      column-gap: 10px
+      row-gap: 10px
       width: 100%
-      overflow-y: scroll
+      margin-bottom: 50px
       border-radius: 10px
+      overflow: hidden
+      grid-template-areas: "one one two three four five six seven" "one one eight nine ten eleven twelve thirteen"
       .nft
-        margin-right: 10px
         background: rgba(0,0,0,0.2)
-        min-width: 200px
-        min-height: 200px
-        width: 200px
-        height: 200px
         border-radius: 10px
+        position: relative
+        .info
+          position: absolute
+          width: 100%
+          background: linear-gradient(180deg, rgba(0,0,0,0.6), transparent)
+          height: 50px
+          display: flex
+          justify-content: space-between
+          align-items: center
+          top: 0
+          padding: 1em
+          .image
+            width: 30px
+            height: 30px
+            border-radius: 50%
+            box-shadow: 0 0 10px rgba(0,0,0,0.5)
+        &:first-child
+          grid-area: one
+        &:nth-child(2)
+          grid-area: two
+        &:nth-child(3)
+          grid-area: three
+        &:nth-child(4)
+          grid-area: four
+        &:nth-child(5)
+          grid-area: five
+        &:nth-child(6)
+          grid-area: six
+        &:nth-child(7)
+          grid-area: seven
+        &:nth-child(8)
+          grid-area: eight
+        &:nth-child(9)
+          grid-area: nine
+        &:nth-child(10)
+          grid-area: ten
+        &:nth-child(11)
+          grid-area: eleven
+        &:nth-child(12)
+          grid-area: twelve
+        &:nth-child(13)
+          grid-area: thirteen
         img
           object-fit: cover
           width: 100%
           height: 100%
           border-radius: 10px
   .tip
-    @include themed()
-      background: t('bg')
     padding: 20px
     width: 100%
     height: 200px
@@ -39,3 +80,49 @@
       transform: translateY(-2%)
       top: 0
       right: 0
+  .categories
+    margin-bottom: 50px
+    .data
+      display: flex
+      width: 100%
+      column-gap: 10px
+      margin-top: 20px
+      .category
+        border-radius: 10px
+        width: 25%
+        display: flex
+        justify-content: center
+        align-items: center
+        background: linear-gradient(45deg, #B900F1, #FF9900)
+        padding: 2em
+.allnfts
+  h1
+    margin-bottom: 20px
+  &_data
+    display: flex
+    gap: 10px
+    flex-wrap: wrap
+.nft
+  background: rgba(0,0,0,0.2)
+  border-radius: 10px
+  position: relative
+  img
+    object-fit: cover
+    width: 200px
+    height: 200px
+    border-radius: 10px
+  .info
+    position: absolute
+    width: 100%
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), transparent)
+    height: 50px
+    display: flex
+    justify-content: space-between
+    align-items: center
+    top: 0
+    padding: 1em
+    .image
+      width: 30px
+      height: 30px
+      border-radius: 50%
+      box-shadow: 0 0 10px rgba(0,0,0,0.5)

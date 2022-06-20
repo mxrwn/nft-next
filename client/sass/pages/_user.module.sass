@@ -1,0 +1,41 @@
+.user
+  width: 100%
+  .head
+    width: 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    padding: 5em
+    &_image
+      width: 150px
+      height: 150px
+      border-radius: 50%
+    h2
+      margin-top: 20px
+  .body
+    &_nfts, .pending_nfts
+      margin-top: 20px
+      display: flex
+      column-gap: 20px
+      &_info
+        display: flex
+        padding: 1em
+        justify-content: space-between  
+      &_nft
+        background: rgba(0,0,0,0.1)
+        border-radius: 10px
+        img
+          border-radius: 10px
+          width: 200px
+          height: 200px
+          object-fit: cover
+.no_nfts
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  height: 300px
+  h1
+    margin-bottom: 10px
+

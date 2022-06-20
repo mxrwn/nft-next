@@ -19,11 +19,12 @@ function getLimitDimensions(width, height, limit) {
 
 function parse(data, limit) {
   const { ext = "" } = imageType(data) || {};
-  
+  console.log(ext)
   return new Promise((resolve, reject) => {
     if (ext === "bmp") {
       resolve(bmp.decode(data));
     } else {
+      console.log('test')
       Canvas.loadImage(data)
         .then(img => {
           const { width, height } = getLimitDimensions(
@@ -53,7 +54,7 @@ function loadUrl(url) {
         const chunks = [];
         res.on("data", data => chunks.push(data));
         res.on("end", () => {
-          resolve(sharp(Buffer.concat(chunks)).resize(500,500).toBuffer());
+          resolve(sharp(Buffer.concat(chunks)).resize(500,500).toFormat('jpg').toBuffer());
         });
       })
       .on("error", reject);

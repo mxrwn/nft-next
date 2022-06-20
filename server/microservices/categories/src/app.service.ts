@@ -6,7 +6,7 @@ export class AppService {
     return 'Hello World!';
   }
 
-  get(): Promise<any> {
+  // get(): Promise<any> {
     
-  }
+  // }
 }

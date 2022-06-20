@@ -8,20 +8,26 @@ import { useRouter } from 'next/router'
 
 import { loadNFTs } from '../API/nfts';
 import LoadingAnimation from '../components/loading';
+import { get } from '../API/users';
+import * as CategoryService from './../API/categories'
+import Link from 'next/link';
 
 export default function Home() {
 
-  const [nfts, setNfts] = useState([1,1,1,1,1,1,1]);
+  const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     getNFTS()
   }, []);
 
   const getNFTS = async () => {
-    setLoading(true)
     const loadedNFTs = await loadNFTs()
-    setNfts(loadedNFTs ? loadedNFTs : [])
-    setTimeout(() => {setLoading(false)}, 4000)
+    console.log(loadedNFTs)
+    if(loadedNFTs){
+      setNfts(loadedNFTs ? loadedNFTs : [])
+      setTimeout(() => {setLoading(false)}, 4000)
+    }
+    
     
   }
 
@@ -31,10 +37,11 @@ export default function Home() {
     <div className={styles.home}>
       {/* <Tip/> */}
       <FeaturedNFTs nfts={nfts}/>
+      <Categories/>
       {
         loading ? <LoadingAnimation/> : ''
       }
-      
+      <AllNFTs/>
     </div>
   )
 }
@@ -54,54 +61,32 @@ const Tip = () => {
 }
 
 const FeaturedNFTs = ({nfts}) => {
-  const [pos, setPos] = useState({ top: 0, left: 0, x: 0, y: 0});
-  const featured = useRef(null);
-
-  const mouseDownHandler = e => () => {
-    setPos({
-      left: featured.current.scrollLeft,
-      top: featured.current.scrollTop,
-      x: e.clientX,
-      y: e.clientY
-    })
-
-    console.log('test')
-    featured.current.userSelect = 'none'
-  }
-
-  const mouseMoveHandler = e => () => {
-    const dx = e.clientX - pos.x;
-    const dy = e.clientY - pos.y
-
-    featured.current.scrollTop = pos.top - dy
-    featured.current.scrollLeft = pos.left - dx
-  }
-
-  const mouseUpHandler = e => () => {
-    console.log('test')
-    featured.current.removeProperty('user-select')
-  }
-
   return (
     <div className={styles.featured}>
-      <h2>Featured NFTs</h2>
-      <div className={styles.nfts} ref={featured}
-      onMouseDown={mouseDownHandler}
-      onMouseMove={mouseMoveHandler}
-      onMouseUp={mouseUpHandler}
-      onClick={(e) => mouseDownHandler(e)}
-      >
+      <h1>Featured NFTs</h1>
+      <div className={styles.nfts}>
         {
-          nfts.map(nft => <OneNFT nft={nft}/>)
+          nfts.map((nft, index) => <OneNFT nft={nft} key={index}/>)
         }
+      </div>
+      <div>
       </div>
     </div>
   )
 }
 
 const OneNFT = ({nft}) => {
+  const [user, setUser] = useState({});
   const router = useRouter()
-
+  useEffect(() => {
+    async function getUser() {
+      if(nft){
+        setUser(await get(nft.seller))
+      }
+      
+    }
+    getUser()
+  }, []);
   const SendToNFT = () => {
     router.push(`/nft/${nft.tokenId}`)
   }
@@ -109,8 +94,71 @@ const OneNFT = ({nft}) => {
   <div className={styles.nft} onClick={() => SendToNFT()}>
     {
       nft.image && (
-        <img src={nft.image}/>
+          <img src={nft.image}/>
       )
     }
+    <div className={styles.info}>
+      <h2>{nft.name}</h2>
+      <div className={styles.image} style={{background: user.image}}></div>
+    </div>
   </div>
 )}
+
+const Categories = () => {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    async function getCategories() {
+      console.log(await CategoryService.get())
+      setCategories(await CategoryService.get())
+    }
+    getCategories()
+    
+  }, []);
+  return (
+    <div className={styles.categories}>
+      <h1>Categories</h1>
+      <div className={styles.data}>
+      {
+        categories.map(category => (
+          <Link href={`/category/${category.name.toLowerCase()}`} key={category._id}>
+          <div className={styles.category} >
+            <h2>{category.name}</h2>
+          </div>
+          </Link>
+          
+        ))
+      }
+      </div>
+    </div>
+  )
+}
+
+const AllNFTs = () => {
+  const [nfts, setNfts] = useState([]);
+  useEffect(() => {
+    async function getNFts() {
+      const all = await loadNFTs()
+      if(all){
+        setNfts(await loadNFTs())
+      }      
+    }
+    getNFts()
+  }, []);
+  return (
+    <div className={styles.allnfts}>
+      <h1>All NFTs</h1>
+      <div className={styles.allnfts_data}>
+        {
+          nfts.map((nft, index) => (
+            <div className={styles.nft} key={index}>
+              <div className={styles.image}>
+                <img src={nft.image}/>
+              </div>
+              
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  )
+}
