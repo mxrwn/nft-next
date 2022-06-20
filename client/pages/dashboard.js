@@ -26,8 +26,8 @@ export default function Dashboard() {
       <div className={styles.nfts}>
         {
           nfts[0] ? 
-            nfts.map(nft => (
-              <Link href={`/dashboard/${nft._id}`}>
+            nfts.map((nft, i) => (
+              <Link href={`/dashboard/${nft._id}`} key={nft._id}>
                 <img src={nft.fileUrl}/>
               </Link>
             ))

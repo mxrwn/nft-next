@@ -40,6 +40,7 @@ export default function NFT() {
     await addView(id);
     
     const item = await isOnMarket(id)
+    console.log(item)
     setBuy(item)
     setTimeout(() => {setLoading(false)}, 4000)
   }

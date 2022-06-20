@@ -106,12 +106,8 @@ export default function User() {
         </>
         :
         <div className={styles.no_nfts}>
-          <h1>Looks like you didn't mint a NFT yet.</h1>
-          <Link href={'/create'}>
-            <Button>
-              Let's create one!
-            </Button>
-          </Link>
+          <h1>{`Looks like you didn't mint a NFT yet.`}</h1>
+          <Link href={'/create'}><Button>{`Let's create one!`}</Button></Link>
         </div>
         
       }
@@ -120,8 +116,8 @@ export default function User() {
         <div className={styles.pending_nfts}>
           {
             pending ?
-              pending.map(nft => (
-                  <div className={styles.body_nfts_nft}>
+              pending.map((nft, i) => (
+                  <div className={styles.body_nfts_nft} key={i}>
                   <img src={nft.fileUrl}/>
                   <div className={styles.body_nfts_info}>
                     
