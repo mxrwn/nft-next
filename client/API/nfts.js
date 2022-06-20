@@ -16,6 +16,7 @@ export async function getNFT(id) {
   const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
   const signer = provider.getSigner()
   try {
+    
     const tokenUri = await tokenContract.tokenURI(id)
     const meta = await axios.get(tokenUri)
     let owner = await tokenContract.ownerOf(id)
@@ -33,10 +34,16 @@ export async function fetchCreatedItems(){
   const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
 
   const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
-  const data = await marketContract.fetchItemsCreated()
+  const data = await marketContract.getAllMarketItems()
   console.log(data)
-  
-  const items = await Promise.all(data.map(async i => {
+  const tokenids = await tokenContract._tokenIds()
+  const ids = tokenids.toNumber()
+
+  console.log('test')
+  const items = await Promise.all(
+    arr.map(async (i, index) => {
+    const itemonmarket = await isOnMarket(index)
+    console.log(itemonmarket)
     const tokenUri = await tokenContract.tokenURI(i.tokenId)
     const meta = await axios.get(tokenUri)
     let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
@@ -95,17 +102,29 @@ export async function loadNFTs() {
 
   const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
   const data = await marketContract.fetchMarketItems()
+  let array = [...data];
+  const tokens = await tokenContract._tokenIds();
+  const ids = tokens.toNumber()
+  const arr = new Array(ids)
+  console.log(arr)
+  for (let index = 0; index < arr.length; index++) {
+    const itemonmarket = await isOnMarket(index)
+    if(!itemonmarket) {
+      array.push({tokenId: index + 1})
+    }
+    console.log(array)
+  }
   
-  
-  const items = await Promise.all(data.map(async i => {
+  const items = await Promise.all(array.map(async i => {
     const tokenUri = await tokenContract.tokenURI(i.tokenId)
+    const owner = await tokenContract.ownerOf(i.tokenId)
+    console.log(owner)
+    
     const meta = await axios.get(tokenUri)
-    let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
     return {
-      price,
-      tokenId: i.tokenId.toNumber(),
-      seller: i.seller,
-      owner: i.owner,
+      tokenId: typeof i.tokenId === 'number' ? i.tokenId : i.tokenId.toNumber(),
+      seller: i.seller ? i.seller : owner,
+      owner: i.owner ? i.owner : owner,
       image: meta.data.image,
       name: meta.data.name,
       description: meta.data.description

@@ -31,10 +31,11 @@ export default function User() {
   async function getUser() {
     console.log(await get(wallet))
     setUser(await get(wallet))
-    const allNFTs = await fetchCreatedItems()
+    const allNFTs = await loadNFTs()
     console.log(allNFTs)
     const pendingNFTs = await getVerificationRequests();
     if(allNFTs) {
+      console.log(allNFTs)
       console.log(allNFTs.filter(nft => nft.seller === wallet))
       setNfts(allNFTs.filter(nft => nft.seller === wallet))
     }
